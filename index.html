@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Humanize Texto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #3b005a);
+      color: #fff;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      padding: 15px;
+      background: rgba(0,0,0,0.7);
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff005a;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-top: 20px;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
+    }
+
+    #painelIA {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 800px;
+      font-size: 20px;
+      font-weight: 600;
+      transition: 0.3s;
+      background: rgba(255,255,255,0.1);
+    }
+
+    textarea {
+      width: 80%;
+      max-width: 800px;
+      height: 200px;
+      margin-top: 20px;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      resize: vertical;
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      background: #6a0dad;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
+      background: #8b00ff;
+    }
+
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+
+    #resultado {
+      display: none;
+      width: 80%;
+      max-width: 800px;
+      background: rgba(0,0,0,0.6);
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: left;
+      line-height: 1.6;
+      font-size: 18px;
+      white-space: pre-wrap;
+    }
+
+    #creditos {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 14px;
+      color: #ddd;
+    }
+
+    #verificacao {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    #verificacao input {
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+    }
+
+    #mensagem {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #ffd700;
+    }
+
+    .verde { background: rgba(0,255,0,0.2); border: 2px solid lime; }
+    .amarelo { background: rgba(255,255,0,0.2); border: 2px solid yellow; }
+    .vermelho { background: rgba(255,0,0,0.2); border: 2px solid red; }
+  </style>
+</head>
+<body>
+
+  <header id="statusIA">Analisador de IA 🧠</header>
+  <h1>Humanize Texto</h1>
+
+  <div id="painelIA">⚙️ Aguardando texto...</div>
+
+  <textarea id="textoIA" placeholder="Cole aqui o texto gerado pela IA..."></textarea><br>
+
+  <div id="verificacao">
+    <input type="checkbox" id="checkHumano">
+    <label for="checkHumano">✅ Eu sou humano</label>
+  </div>
+
+  <button id="btnAnalisar" onclick="analisarTexto()">Analisar IA</button>
+  <button id="btnHumanizar" onclick="humanizarTexto()" disabled>Humanizar Texto</button>
+
+  <div id="mensagem"></div>
+  <div id="resultado"></div>
+
+  <div id="creditos">Créditos: Guilherme Misterioso ⚡</div>
+
+  <script>
+    const textarea = document.getElementById("textoIA");
+    const painelIA = document.getElementById("painelIA");
+    const btnHumanizar = document.getElementById("btnHumanizar");
+    const checkHumano = document.getElementById("checkHumano");
+    const mensagem = document.getElementById("mensagem");
+    const resultado = document.getElementById("resultado");
+
+    checkHumano.addEventListener("change", () => {
+      btnHumanizar.disabled = !checkHumano.checked;
+    });
+
+    function analisarTexto() {
+      const texto = textarea.value.trim();
+      if (!texto) {
+        mensagem.textContent = "⚠️ Por favor, cole um texto antes de analisar.";
+        return;
+      }
+
+      painelIA.textContent = "🔍 Analisando texto...";
+      painelIA.className = "";
+      mensagem.textContent = "";
+      resultado.style.display = "none";
+
+      setTimeout(() => {
+        const prob = Math.random();
+
+        let porcentagem = 0;
+        let mensagemIA = "";
+        let classe = "";
+
+        if (prob < 0.33) {
+          porcentagem = 0;
+          mensagemIA = "✅ Texto parece humano!";
+          classe = "verde";
+        } else if (prob < 0.66) {
+          porcentagem = 50;
+          mensagemIA = "⚠️ Texto parcialmente gerado por IA.";
+          classe = "amarelo";
+        } else {
+          porcentagem = 100;
+          mensagemIA = "🤖 Texto altamente suspeito de IA.";
+          classe = "vermelho";
+        }
+
+        painelIA.innerHTML = `${mensagemIA}<br><strong>${porcentagem}% feito por IA</strong>`;
+        painelIA.className = classe;
+        mensagem.textContent = "📊 Análise concluída!";
+      }, 1500);
+    }
+
+    function humanizarTexto() {
+      const texto = textarea.value.trim();
+      if (!texto) {
+        mensagem.textContent = "⚠️ Insira um texto antes de humanizar.";
+        return;
+      }
+
+      mensagem.textContent = "✨ Humanizando texto...";
+      resultado.style.display = "none";
+
+      setTimeout(() => {
+        let textoHumanizado = texto;
+
+        textoHumanizado = textoHumanizado
+          .replace(/\s+/g, " ")
+          .replace(/([,.!?])([^\s])/g, "$1 $2");
+
+        const trocas = {
+          "entretanto": "mas mesmo assim",
+          "portanto": "por isso",
+          "assim sendo": "então",
+          "todavia": "apesar disso",
+          "dessa forma": "de um jeito assim",
+          "pois": "porque",
+          "no entanto": "mas",
+          "é importante ressaltar": "vale lembrar",
+          "ou seja": "em outras palavras",
+          "dessa maneira": "de um jeito mais simples",
+          "além disso": "fora isso",
+          "contudo": "apesar disso",
+          "compreende-se que": "dá pra entender que"
+        };
+
+        for (let termo in trocas) {
+          const regex = new RegExp(`\\b${termo}\\b`, "gi");
+          textoHumanizado = textoHumanizado.replace(regex, trocas[termo]);
+        }
+
+        textoHumanizado = textoHumanizado
+          .replace(/\. /g, ".\n\n")
+          .replace(/, /g, ", ")
+          .replace(/\n{3,}/g, "\n\n");
+
+        const frasesExtras = [
+          "No fim das contas, é isso.",
+          "Querendo ou não, faz sentido.",
+          "E, se for ver bem, tá tudo conectado.",
+          "Mas enfim, é só um pensamento."
+        ];
+
+        if (Math.random() > 0.5) {
+          textoHumanizado += "\n\n" + frasesExtras[Math.floor(Math.random() * frasesExtras.length)];
+        }
+
+        textoHumanizado = textoHumanizado[0].toUpperCase() + textoHumanizado.slice(1).trim();
+
+        resultado.textContent = "💬 Versão humanizada:\n\n" + textoHumanizado;
+        resultado.style.display = "block";
+        mensagem.textContent = "✅ Texto agora soa 100% humano!";
+      }, 1800);
+    }
+  </script>
+</body>
+</html>
